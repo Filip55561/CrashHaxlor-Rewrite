@@ -45,7 +45,7 @@ public partial class MainWindow : Window
             _crashInfo[0]
         });
         
-        ReportText.Text = $"If your game keeps crashing with the same error, please report it at our GitHub with the log file included: https://github.com/uh-and-who/VK\n\nA log file \"{logName}\" has been created.";
+        ReportText.Text = $"If your game keeps crashing with the same error, please report it at our GitHub with the log file included at: https://github.com/uh-and-who/VK\n\nA log file \"{logName}\" has been created at\n{logsDir}";
     }
 
     private void RelaunchClicked(object? sender, RoutedEventArgs e)
