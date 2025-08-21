@@ -1,0 +1,58 @@
+name: Build Application
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build Linux
+      run: |
+        dotnet publish -c Release -r linux-x64 --self-contained true -o release/linux-x64
+
+    - name: Build Windows
+      run: |
+        dotnet publish -c Release -r win-x86 --self-contained true -o release/windows-x86
+
+    - name: Build Mac
+      run: |
+        dotnet publish -c Release -r osx-x64 --self-contained true -o release/mac-x64
+
+    - name: Package Linux
+      run: tar -czvf linux-x64.tar.gz -C release/linux-x64 .
+
+    - name: Package Windows
+      run: zip -9 -j windows-x86.zip release/windows-x86/*
+
+    - name: Package Mac
+      run: tar -czvf mac-x64.tar.gz -C release/mac-x64 .
+
+    - name: Upload Linux artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-x64
+        path: linux-x64.tar.gz
+
+    - name: Upload Mac artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: mac-x64
+        path: mac-x64.tar.gz
+
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-x86
+        path: windows-x86.zip
